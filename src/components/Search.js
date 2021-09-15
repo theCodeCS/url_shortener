@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import axios from "../api/axios";
+import copy from "../copy"
 import 'bootstrap/dist/css/bootstrap.css';
 import {Button, Form, Spinner} from "react-bootstrap"
 import "../Search.css"
 
 //react-bootstrap and bootstrap
 
-const HTTP_URL_VALIDATOR_REGEX = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+const HTTP_URL_VALIDATOR_REGEX = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g;
 
 function Search() {
 
@@ -25,8 +26,7 @@ function Search() {
     }
 
     const checkLink = (string) => {
-        // Regex to check if string is a valid URL
-        return string.match(HTTP_URL_VALIDATOR_REGEX);
+        return string.match(HTTP_URL_VALIDATOR_REGEX); // Regex to check if string is a valid URL
       };
 
     const getLink = async () => {
@@ -34,6 +34,7 @@ function Search() {
         .get('shorten?url=' + text)
         .then((response) => {
             setShort(response.data.result.short_link);
+            console.log(short)
             setLoading(false);
         }).catch((error) => {
             console.error(error)
@@ -42,15 +43,16 @@ function Search() {
         }
     
     return(
+
     <div className="container">
 
         <h1>Shorten a Link!</h1>
 
         <Form className="form" onSubmit={(e) => handleSubmit(e)}>
-            <Form.Group style={{marginBottom: "30px"}} className="md-3">
-                <Form.Control value={text} onChange={(e) => {setText(e.target.value)}} placeholder="ex: google.com"/>
-                <Form.Text>Type in a URL to Shorten</Form.Text>
-            </Form.Group>
+            <div className="form-floating mb-3">
+                <input className="form-control" value={text} onChange={(e) => {setText(e.target.value)}} placeholder="ex: google.com"/>
+                <label for="floatingInput">Enter A Link Here: (i.e. Google.com)</label>
+            </div>
             <Button onClick={(e) => handleSubmit(e)}>
                 Shorten
             </Button>
@@ -58,7 +60,11 @@ function Search() {
 
         {isLoading && <Spinner animation="border" />}
         
-        <a href={"https://" + short} style={{fontSize: "30px"}}target="_blank" rel="noreferrer">{short}</a>
+        
+        <div style={{marginBottom: "30px"}}>
+            <a href={"https://" + short} id="copy" style={{fontSize: "30px"}}target="_blank" rel="noreferrer">{short}</a> <br></br>
+        </div>
+        {short !== "" && <Button onClick={copy()} variant="primary">Copy Link to Clipboard</Button>}
 
         
     </div>)
