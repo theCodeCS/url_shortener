@@ -22,6 +22,9 @@ function Search() {
             getLink();
             setText("")
             setLoading(!isLoading)
+            document.getElementById("header").innerText = text.toUpperCase();
+        } else {
+            document.getElementById("header").innerText = "Invalid URL - Try Again";
         }
     }
 
@@ -29,12 +32,12 @@ function Search() {
         return string.match(HTTP_URL_VALIDATOR_REGEX); // Regex to check if string is a valid URL
       };
 
+    
     const getLink = async () => {
         await axios
         .get('shorten?url=' + text)
         .then((response) => {
             setShort(response.data.result.short_link);
-            console.log(short)
             setLoading(false);
         }).catch((error) => {
             console.error(error)
@@ -46,11 +49,11 @@ function Search() {
 
     <div className="container">
 
-        <h1>Shorten a Link!</h1>
+        <h1 id="header">Shorten a Link!</h1>
 
         <Form className="form" onSubmit={(e) => handleSubmit(e)}>
             <div className="form-floating mb-3">
-                <input className="form-control" value={text} onChange={(e) => {setText(e.target.value)}} placeholder="ex: google.com"/>
+                <input autoFocus className="form-control" value={text} onChange={(e) => {setText(e.target.value)}} placeholder="ex: google.com"/>
                 <label for="floatingInput">Enter A Link Here: (i.e. Google.com)</label>
             </div>
             <Button onClick={(e) => handleSubmit(e)}>
